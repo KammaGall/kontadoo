@@ -1,0 +1,8 @@
+2026-04-15 21:02:15 [INFO]: 🚀 Kontadoo server running on port 5000 {"service":"kontadoo-backend"}
+2026-04-15 21:02:15 [INFO]: 📡 Environment: development {"service":"kontadoo-backend"}
+2026-04-15 21:02:15 [INFO]: 🗄️ Database: localhost:5432/kontadoo_db {"service":"kontadoo-backend"}
+2026-04-15 21:03:48 [INFO]: ::1 - - [15/Apr/2026:18:03:48 +0000] "GET /health HTTP/1.1" 200 73 "-" "PostmanRuntime/7.52.0" {"service":"kontadoo-backend"}
+2026-04-15 21:04:51 [INFO]: ::1 - - [15/Apr/2026:18:04:51 +0000] "POST /api/auth/login HTTP/1.1" 400 143 "-" "PostmanRuntime/7.52.0" {"service":"kontadoo-backend"}
+2026-04-15 21:05:20 [INFO]: User logged in: admin (712b319c-a4be-4d9f-957e-7e743ad30f0b) {"service":"kontadoo-backend"}
+2026-04-15 21:05:20 [INFO]: ::1 - - [15/Apr/2026:18:05:20 +0000] "POST /api/auth/login HTTP/1.1" 200 - "-" "PostmanRuntime/7.52.0" {"service":"kontadoo-backend"}
+2026-04-15 21:06:37 [INFO]: SIGINT signal received: closing HTTP server {"service":"kontadoo-backend"}
