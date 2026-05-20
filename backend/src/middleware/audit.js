@@ -14,7 +14,6 @@ const auditMiddleware = (action, entityType) => {
                     const record = await model.findByPk(req.params.id);
                     if (record) {
                         oldData = record.toJSON();
-                        // Удаляем sensitive data из логов
                         delete oldData.password_hash;
                         delete oldData.qr_code_token;
                     }
@@ -24,12 +23,14 @@ const auditMiddleware = (action, entityType) => {
             }
         }
 
-        // Перехватываем результат
-        const originalJson = res.json;
-        const originalSend = res.send;
-        const originalEnd = res.end;
+        // Флаг, чтобы записать аудит только один раз
+        let auditWritten = false;
 
         const auditLog = async (data) => {
+            // Защита от двойной записи
+            if (auditWritten) return;
+            auditWritten = true;
+
             try {
                 if (res.statusCode >= 200 && res.statusCode < 300 && req.user) {
                     let newData = null;
@@ -42,13 +43,11 @@ const auditMiddleware = (action, entityType) => {
                         newData = typeof data === 'string' ? JSON.parse(data) : data;
                     }
 
-                    // Удаляем sensitive data
                     if (newData) {
                         delete newData.password_hash;
                         delete newData.qr_code_token;
                     }
 
-                    // Вычисляем изменения
                     let changes = null;
                     if (oldData && newData) {
                         changes = {};
@@ -85,26 +84,20 @@ const auditMiddleware = (action, entityType) => {
             }
         };
 
+        // Перехватываем res.json (основной метод)
+        const originalJson = res.json;
         res.json = function (data) {
             auditLog(data);
             return originalJson.call(this, data);
         };
 
-        res.send = function (data) {
-            auditLog(data);
-            return originalSend.call(this, data);
-        };
-
-        res.end = function (data) {
-            if (data) auditLog(data);
-            return originalEnd.call(this, data);
-        };
+        // ❌ НЕ перехватываем res.send и res.end — res.json сам вызывает res.send
 
         next();
     };
 };
 
-// Ручное логирование аудита (для нестандартных действий)
+// Ручное логирование аудита
 const logAudit = async (req, action, entityType, entityId = null, metadata = {}) => {
     try {
         if (!req.user) return;

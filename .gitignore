@@ -1,0 +1,38 @@
+# Node modules
+node_modules/
+*/node_modules/
+
+.env
+.env.local
+.env.*.local
+*/backend/.env
+
+# Logs
+logs/
+*.log
+
+# Database
+*.sqlite
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build outputs
+dist/
+build/
+*/dist/
+*/build/
+
+# Docker
+docker-compose.override.yml
+
+# Uploads
+uploads/

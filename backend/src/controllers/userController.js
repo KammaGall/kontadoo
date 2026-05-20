@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const { User, Role, Business } = require('../models');
+const { User, Role, Business, Transaction, Session, AuditLog } = require('../models');
 const { generateQRCode, generateToken, generateReceiptNumber } = require('../utils/helpers');
 const logger = require('../config/logger');
 
@@ -251,6 +251,59 @@ class UserController {
             next(error);
         }
     }
+
+
+    async hardDeleteUser(req, res, next) {
+        try {
+            const { id } = req.params;
+
+            const user = await User.findOne({
+                where: { id, business_id: req.businessId }
+            });
+
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            // Нельзя удалить самого себя
+            if (user.id === req.user.id) {
+                return res.status(400).json({ error: 'Cannot delete yourself' });
+            }
+
+            // Проверяем, есть ли транзакции у пользователя
+            const transactionCount = await Transaction.count({
+                where: { user_id: id }
+            });
+
+            if (transactionCount > 0) {
+                return res.status(409).json({
+                    error: `Cannot delete user. They have ${transactionCount} transaction(s). Deactivate the user instead or delete their transactions first.`
+                });
+            }
+
+            // Удаляем сессии пользователя
+            await Session.destroy({
+                where: { user_id: id }
+            });
+
+            // Удаляем аудит-логи пользователя (или можно оставить, заменив user_id на null)
+            await AuditLog.update(
+                { user_id: null },
+                { where: { user_id: id } }
+            );
+
+            // Полностью удаляем пользователя
+            await user.destroy();
+
+            logger.info(`User permanently deleted: ${user.login} (${id})`);
+
+            res.json({ message: 'User permanently deleted' });
+
+        } catch (error) {
+            logger.error('Hard delete user error:', error);
+            next(error);
+        }
+    };
 
     // Генерация QR-кода для сотрудника
     async generateUserQR(req, res, next) {

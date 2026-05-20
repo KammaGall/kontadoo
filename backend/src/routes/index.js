@@ -4,6 +4,7 @@ const usersRoutes = require('./users.routes');
 const rolesRoutes = require('./roles.routes');
 const transactionsRoutes = require('./transactions.routes');
 const auditRoutes = require('./audit.routes');
+const settingsRoutes = require('./settings.routes')
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ router.use('/users', usersRoutes);
 router.use('/roles', rolesRoutes);
 router.use('/transactions', transactionsRoutes);
 router.use('/audit', auditRoutes);
+router.use('/settings', settingsRoutes)
 
 // Health check (публичный)
 router.get('/health', (req, res) => {

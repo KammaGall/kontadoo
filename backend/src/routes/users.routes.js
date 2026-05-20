@@ -44,6 +44,12 @@ router.delete('/:id',
     userController.deleteUser
 );
 
+router.delete('/:id/permanent',
+    checkPermission('staff', 'delete'),
+    auditMiddleware('DELETE', 'User'),
+    userController.hardDeleteUser
+);
+
 router.post('/:id/qr',
     checkPermission('staff', 'update'),
     userController.generateUserQR

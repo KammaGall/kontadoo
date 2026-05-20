@@ -166,6 +166,7 @@ class RoleController {
     }
 
     // Удаление роли
+    // Удаление роли
     async deleteRole(req, res, next) {
         try {
             const { id } = req.params;
@@ -193,7 +194,18 @@ class RoleController {
 
             if (userCount > 0) {
                 return res.status(409).json({
-                    error: `Cannot delete role. ${userCount} active user(s) have this role.`
+                    error: `Cannot delete role. ${userCount} active user(s) have this role. Reassign them first.`
+                });
+            }
+
+            // Также проверяем неактивных пользователей
+            const inactiveUserCount = await User.count({
+                where: { role_id: id, is_active: false }
+            });
+
+            if (inactiveUserCount > 0) {
+                return res.status(409).json({
+                    error: `Cannot delete role. ${inactiveUserCount} inactive user(s) have this role. Reassign or delete them first.`
                 });
             }
 
@@ -205,6 +217,14 @@ class RoleController {
 
         } catch (error) {
             logger.error('Delete role error:', error);
+
+            // Обработка ошибки внешнего ключа
+            if (error.name === 'SequelizeForeignKeyConstraintError') {
+                return res.status(409).json({
+                    error: 'Cannot delete role. Users are assigned to this role. Reassign them first.'
+                });
+            }
+
             next(error);
         }
     }
