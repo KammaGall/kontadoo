@@ -52,7 +52,7 @@
 ```bash
 git clone https://github.com/your-username/kontadoo.git
 cd kontadoo
-```bash
+```
 
 2. Настройте Backend:
 
