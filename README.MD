@@ -49,7 +49,7 @@
 
 1. Клонируйте репозиторий:
 
-
+```bash
 git clone https://github.com/your-username/kontadoo.git
 cd kontadoo
 
