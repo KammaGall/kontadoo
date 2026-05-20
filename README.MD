@@ -56,28 +56,29 @@ cd kontadoo
 
 2. Настройте Backend:
 
-
+```bash
 cd backend
 npm install
 cp .env.example .env
 # Отредактируйте .env файл
+```
 
 3. Создайте базу данных и примените миграции:
-
+```bash
 npx sequelize-cli db:create
 npx sequelize-cli db:migrate
 npx sequelize-cli db:seed:all
-
+```
 4. Запустите бэкенд:
-
+```bash
 npm run dev
 
-
+```
 5. Настройте и запустите фронтенд:
-
+```bash
 cd ../frontend
 npm install
 npm run dev
-
+```
 6. Откройте http://localhost:5173
 
