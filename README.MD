@@ -49,39 +49,34 @@
 
 1. Клонируйте репозиторий:
 
-````bash
+
 git clone https://github.com/your-username/kontadoo.git
 cd kontadoo
-```bash
 
 2. Настройте Backend:
 
-```bash
+
 cd backend
 npm install
 cp .env.example .env
 # Отредактируйте .env файл
-```bash
 
 3. Создайте базу данных и примените миграции:
-```bash
 
 npx sequelize-cli db:create
 npx sequelize-cli db:migrate
 npx sequelize-cli db:seed:all
-```bash
 
 4. Запустите бэкенд:
-```bash
+
 npm run dev
-```bash
+
 
 5. Настройте и запустите фронтенд:
-```bash
+
 cd ../frontend
 npm install
 npm run dev
-```bash
 
 6. Откройте http://localhost:5173
-````
+
